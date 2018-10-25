@@ -15,12 +15,24 @@ namespace ApothAudioTools
     {
         #region Settings
 
+        /// <summary>
+        /// gets or sets the video export directory
+        /// </summary>
         private string ExportVideoDirPath { get; set; }
 
+        /// <summary>
+        /// gets or sets the audio export directory
+        /// </summary>
         private string ExportAudioDirPath { get; set; }
 
+        /// <summary>
+        /// gets or sets the export options
+        /// </summary>
         private ExportOptions ExportOptions { get; set; }
 
+        /// <summary>
+        /// gets or sets the skipped video
+        /// </summary>
         private bool SkipVideosWhichExists { get; set; }
         #endregion
 
