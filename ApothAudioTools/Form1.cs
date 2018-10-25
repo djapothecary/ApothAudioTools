@@ -1,4 +1,5 @@
-﻿using MediaToolkit;
+﻿using ApothAudioTools.Utilities;
+using MediaToolkit;
 using MediaToolkit.Model;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using VideoLibrary;
 using YoutubeExtractor;
@@ -21,29 +23,31 @@ namespace ApothAudioTools
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            cmbxResolution.SelectedIndex = 0;
+            //Not implemented
         }
 
-        //private void btnDownload_Click(object sender, EventArgs e)
         private void btnDownload_Click_1(object sender, EventArgs e)
         {
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
 
-            //sender.ProtocolVersion = HttpVersion.Version10; // THIS DOES THE TRICK
-            //ServicePointManager.Expect100Continue = true;
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-            //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            if (!cbxAddList.Checked && tbxUrl.Text != "")
+            {
+                SingleSyncDownload(tbxUrl.Text);
+            }
+            else if (cbxAddList.Checked)
+            {
+                //TODO: Parse list
+                var linkList = tbxLinkList.Text;
 
-            //get video url
-            //IEnumerable<VideoInfo> videos = DownloadUrlResolver.GetDownloadUrls(tbxUrl.Text);
-            var videos = DownloadUrlResolver.GetDownloadUrls(tbxUrl.Text, false);
+                var listParser = new Utilities.ListParser();
+                var linkinfoList = listParser.BuildList(linkList);
 
-            //MediaDownloader();
+                AsyncDownload(linkinfoList);
+            }            
 
-            //VideoDownloader(videos);
+            tbxUrl.ResetText();
 
-            AudioDownloader(videos);
         }
 
         private void Downloader_DownloadProgressChanged(object sender, ProgressEventArgs e)
@@ -136,6 +140,131 @@ namespace ApothAudioTools
                 engine.GetMetadata(inputFile);
 
                 engine.Convert(inputFile, outputFile);
+            }
+        }
+
+        public void SingleSyncDownload(string link)
+        {
+            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\";
+            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\";
+
+            var link1 = new LinkInfo(link);
+
+            var downloader = new YTDownloaderBuilder()
+                .SetExportAudioPath(exportAudioPath)    //required
+                .SetExportVideoPath(exportVideoPath)    //required
+                .SetExportOptions(ExportOptions.ExportVideo | ExportOptions.ExportAudio)    //default
+                .SetSkipDownloadIfFileExists(false) //default
+                .SetLinks(link1)    //check other overloads
+                .Build();           
+
+            DownloadResult[] results = downloader.DownloadLinks();  //process the download
+
+            foreach (var res in results)
+            {
+                Console.WriteLine(res.AudioSavedFilePath);
+                Console.WriteLine(res.VideoSavedFilePath);
+                Console.WriteLine(res.FileBaseName);
+                Console.WriteLine(res.GUID);
+                Console.WriteLine(res.DownloadSkipped);
+            }
+
+            downloader.AddDownloadStartedAction(link1.GUID, (evArgs) => 
+            {
+                Console.WriteLine("DOWNLOAD STARTED");
+            });
+
+            downloader.AddDownloadFinishedAction(link1.GUID, (evArgs) => 
+            {
+                Console.WriteLine("DOWNLOAD FINISHED");
+            });
+
+            downloader.AddDownloadProgressChangedAction(link1.GUID, (progressArgs) =>
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    progressBar.Value = (int)progressArgs.ProgressPercentage;
+                    lblPercentage.Text = $"{string.Format("{0:0.##}", progressArgs.ProgressPercentage)}%";
+                    progressBar.Update();
+                }));
+
+                Console.WriteLine("Download for link:  " + link1.URL + " " + progressArgs.ProgressPercentage + "%");
+            });
+
+            downloader.AddDownloadStartedAction(link1.GUID, (convertArgs) =>
+            {
+                //Console.WriteLine("Converting audio to path:  " + convertArgs.AudioSavedFilePath);
+            });
+
+            downloader.AddAudioConvertingEndedAction(link1.GUID, (convertArgs) =>
+            {
+                Console.WriteLine("Converting audio complete");
+            });
+        }
+
+        public void AsyncDownload(List<LinkInfo> linkinfoList)
+        {
+            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\";
+            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\";
+
+            var downloader = new YTDownloaderBuilder()
+                .SetExportAudioPath(exportAudioPath)    //required
+                .SetExportVideoPath(exportVideoPath)    //required
+                .SetExportOptions(ExportOptions.ExportVideo | ExportOptions.ExportAudio)    //default
+                .SetSkipDownloadIfFileExists(false) //default
+                .SetLinks(linkinfoList)    //check other overloads
+                .Build();            
+
+            Task<DownloadResult[]> results = downloader.DownloadLinksAsync(CancellationToken.None); // process download
+
+            foreach (var link in linkinfoList)
+            {
+                downloader.AddDownloadStartedAction(link.GUID, (evArgs) =>
+                {
+                    Console.WriteLine("DOWNLOAD STARTED");
+                });
+
+                downloader.AddDownloadFinishedAction(link.GUID, (evArgs) =>
+                {
+                    Console.WriteLine("DOWNLOAD FINISHED");
+                });
+
+                downloader.AddDownloadProgressChangedAction(link.GUID, (progressArgs) =>
+                {
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        progressBar.Value = (int)progressArgs.ProgressPercentage;
+                        lblPercentage.Text = $"{string.Format("{0:0.##}", progressArgs.ProgressPercentage)}%";
+                        progressBar.Update();
+                    }));
+
+                    Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
+                });
+
+                downloader.AddDownloadStartedAction(link.GUID, (convertArgs) =>
+                {
+                    //Console.WriteLine("Converting audio to path:  " + convertArgs.AudioSavedFilePath);
+                });
+
+                downloader.AddAudioConvertingEndedAction(link.GUID, (convertArgs) =>
+                {
+                    Console.WriteLine("Converting audio for link:  " + link.FileName + " completed.");
+                    //tbxUrl.ResetText();
+                    //progressBar.Value = 0;
+                    //progressBar.Refresh();
+                });
+            }
+        }
+
+        private void cbxAddList_CheckedChanged(object sender, EventArgs e)
+        {
+            if (tbxLinkList.Visible)
+            {
+                tbxLinkList.Visible = false;
+            }
+            else
+            {
+                tbxLinkList.Visible = true;
             }
         }
     }
