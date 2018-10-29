@@ -138,8 +138,20 @@ namespace ApothAudioTools
 
                      var videoInfo = GetVideoInfo(linkInfo, out videoName, out videoFilePath);
 
+                     //test if the video file exists
                      if (File.Exists(videoFilePath) && SkipVideosWhichExists)
                      {
+                         Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
+                         return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                     }
+
+                     //test if the converted audio exists
+                     //TODO: try building skip mechanics here
+                     var testFile = videoFilePath.Replace(".mp4", ".mp3");
+                     if (File.Exists(testFile))
+                     {
+                         //don't download
+                         Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
                          return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
                      }
 
@@ -147,12 +159,31 @@ namespace ApothAudioTools
 
                      if (ExportOptions.HasFlag(ExportOptions.ExportAudio))
                      {
-                         DownloadAudio(linkInfo, videoFilePath, videoInfo.VideoExtension);
+                         if (videoInfo != null)
+                         {
+                             DownloadAudio(linkInfo, videoFilePath, videoInfo.VideoExtension);
+                         }
+                         else
+                         {
+                             Console.WriteLine("Video is empty, abandoning task...");
+                             tasks.RemoveAt((int)Task.CurrentId);
+                             return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                         }
+                         
                      }
 
                      if (ExportOptions.HasFlag(ExportOptions.ExportAudio))
                      {
-                         File.Delete(videoFilePath);
+                         if (!string.IsNullOrEmpty(videoFilePath))
+                         {
+                             File.Delete(videoFilePath);
+                         }
+                         else
+                         {
+                             Console.WriteLine("Video is empty, abandoning task...");
+                             tasks.RemoveAt((int)Task.CurrentId);
+                             return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                         }
                      }
 
                      return new DownloadResult()
@@ -176,19 +207,38 @@ namespace ApothAudioTools
 
             // Select the first video by type with highest AudioBitrate
             VideoInfo videoInfo = videoInfos
-                .OrderByDescending(info => info.AudioBitrate)
-                .First();
+                ?.OrderByDescending(info => info.AudioBitrate)
+                ?.First();
 
-            // This is must, cause we decrypting only this video
-            if (videoInfo.RequiresDecryption)
+            //wrap whole thing in null object check
+            if (videoInfo != null)
             {
-                DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
+                // This is must, cause we decrypting only this video
+                if (videoInfo.RequiresDecryption)
+                {
+                    DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
+                }
             }
 
-            string fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
+            //string fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
+            string fileBaseName = string.Empty;
+
+            //null check the info again
+            if (videoInfo != null)
+            {
+                fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
+            }
 
             videoName = fileBaseName;
-            videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);
+
+            //videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);                    
+            videoFilePath = string.Empty;
+
+            //null check the info again
+            if (videoInfo != null)
+            {
+                videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);
+            }
 
             return videoInfo;
         }

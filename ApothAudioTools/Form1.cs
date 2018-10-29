@@ -145,8 +145,8 @@ namespace ApothAudioTools
 
         public void SingleSyncDownload(string link)
         {
-            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\";
-            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\";
+            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
+            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
 
             var link1 = new LinkInfo(link);
 
@@ -204,8 +204,8 @@ namespace ApothAudioTools
 
         public void AsyncDownload(List<LinkInfo> linkinfoList)
         {
-            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\";
-            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\";
+            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
+            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
 
             var downloader = new YTDownloaderBuilder()
                 .SetExportAudioPath(exportAudioPath)    //required
@@ -238,7 +238,7 @@ namespace ApothAudioTools
                         progressBar.Update();
                     }));
 
-                    Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
+                    //Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
                 });
 
                 downloader.AddDownloadStartedAction(link.GUID, (convertArgs) =>
@@ -246,13 +246,13 @@ namespace ApothAudioTools
                     //Console.WriteLine("Converting audio to path:  " + convertArgs.AudioSavedFilePath);
                 });
 
-                downloader.AddAudioConvertingEndedAction(link.GUID, (convertArgs) =>
-                {
-                    Console.WriteLine("Converting audio for link:  " + link.FileName + " completed.");
-                    //tbxUrl.ResetText();
-                    //progressBar.Value = 0;
-                    //progressBar.Refresh();
-                });
+                //downloader.AddAudioConvertingEndedAction(link.GUID, (convertArgs) =>
+                //{
+                //    Console.WriteLine("Converting audio for link:  " + link.FileName + " completed.");
+                //    //tbxUrl.ResetText();
+                //    //progressBar.Value = 0;
+                //    //progressBar.Refresh();
+                //});
             }
         }
 
