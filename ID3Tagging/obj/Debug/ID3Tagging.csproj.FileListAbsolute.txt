@@ -1,0 +1,6 @@
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.csprojAssemblyReference.cache
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.ID3Editor.ID3AdapterEdit.resources
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.ID3Editor.ID3PowerEdit.resources
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.ID3Editor.MainForm.resources
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.csproj.GenerateResource.cache
+C:\Source\ApothAudioTools\ID3Tagging\obj\Debug\ID3Tagging.csproj.CoreCompileInputs.cache

@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{37161804-A233-4F40-BEC7-5BE51FBEF91E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ID3Tagging</RootNamespace>
+    <AssemblyName>ID3Tagging</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ID3Editor\DirScan.cs" />
+    <Compile Include="ID3Extract\DirScan.cs" />
+    <Compile Include="ID3Extract\Program.cs" />
+    <Compile Include="ID3Extract\ReopositoryAdapter.cs" />
+    <Compile Include="ID3Extract\RepositoryDataContext.cs" />
+    <Compile Include="ID3Editor\Properties\AssemblyInfo.cs" />
+    <Compile Include="ID3Editor\DirBrowser.cs" />
+    <Compile Include="ID3Editor\ID3AdapterEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ID3Editor\ID3AdapterEdit.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ID3AdapterEdit.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ID3Editor\ID3PowerEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ID3Editor\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ID3Editor\MainForm.Designer.cs" />
+    <Compile Include="ID3Editor\MainPresenter.cs" />
+    <Compile Include="ID3Editor\Program.cs" />
+    <Compile Include="ID3Editor\Properties\Settings.Designer.cs" />
+    <Compile Include="ID3Editor\Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ID3Lib\Exceptions\InvalidFrameException.cs" />
+    <Compile Include="ID3Lib\Exceptions\InvalidStructureException.cs" />
+    <Compile Include="ID3Lib\Exceptions\InvalidTagException.cs" />
+    <Compile Include="ID3Lib\Exceptions\nvalidPaddingException.cs" />
+    <Compile Include="ID3Lib\Exceptions\TagNotFoundException.cs" />
+    <Compile Include="ID3Lib\FrameDescription.cs" />
+    <Compile Include="ID3Lib\FrameFactory.cs" />
+    <Compile Include="ID3Lib\FrameHelper.cs" />
+    <Compile Include="ID3Lib\Frames\FrameAttribute.cs" />
+    <Compile Include="ID3Lib\Frames\FrameBase.cs" />
+    <Compile Include="ID3Lib\Frames\FrameBinary.cs" />
+    <Compile Include="ID3Lib\Frames\FrameFullText.cs" />
+    <Compile Include="ID3Lib\Frames\FramePicture.cs" />
+    <Compile Include="ID3Lib\Frames\FramePlayCounter.cs" />
+    <Compile Include="ID3Lib\Frames\FramePopularimeter.cs" />
+    <Compile Include="ID3Lib\Frames\FrameText.cs" />
+    <Compile Include="ID3Lib\Frames\FrameTextUserDef.cs" />
+    <Compile Include="ID3Lib\Frames\FrameUniqueIdentifier.cs" />
+    <Compile Include="ID3Lib\Frames\FrameUnkown.cs" />
+    <Compile Include="ID3Lib\Frames\FrameUrl.cs" />
+    <Compile Include="ID3Lib\Frames\FrameUrlUserDef.cs" />
+    <Compile Include="ID3Lib\ID3v1.cs" />
+    <Compile Include="ID3Lib\TagExtendedHeader.cs" />
+    <Compile Include="ID3Lib\TagHandler.cs" />
+    <Compile Include="ID3Lib\TagHeader.cs" />
+    <Compile Include="ID3Lib\TagManager.cs" />
+    <Compile Include="ID3Lib\TagModel.cs" />
+    <Compile Include="ID3Lib\Utils\Memory.cs" />
+    <Compile Include="ID3Lib\Utils\Swap.cs" />
+    <Compile Include="ID3Lib\Utils\Sync.cs" />
+    <Compile Include="ID3Lib\Utils\TextBuilder.cs" />
+    <Compile Include="MP3Lib\Audio\Audio.cs" />
+    <Compile Include="MP3Lib\Audio\AudioBuffer.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFile.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFrame.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFrameFactory.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFrameHeader.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFrameVbriHeader.cs" />
+    <Compile Include="MP3Lib\Audio\AudioFrameXingHeader.cs" />
+    <Compile Include="MP3Lib\Exceptions\InvalidAudioFrameException.cs" />
+    <Compile Include="MP3Lib\Exceptions\InvalidVbrSizeException.cs" />
+    <Compile Include="MP3Lib\MP3\IAudio.cs" />
+    <Compile Include="MP3Lib\MP3\MP3File.cs" />
+    <Compile Include="MP3Lib\MP3\MP3FileData.cs" />
+    <Compile Include="MP3Lib\Utils\FileMover.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\CursorKeeper.cs" />
+    <Compile Include="Utils\ExceptionMessageBox.cs" />
+    <Compile Include="Utils\FileIterator.cs" />
+    <Compile Include="Utils\HiPerfTimer.cs" />
+    <Compile Include="Utils\HiPerfTimerWrapper.cs" />
+    <Compile Include="Utils\TraceWriteline.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ID3Editor\DataSources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ID3Editor\Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ID3Editor\ID3AdapterEdit.resx">
+      <DependentUpon>ID3AdapterEdit.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ID3AdapterEdit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ID3Editor\ID3PowerEdit.resx">
+      <DependentUpon>ID3PowerEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ID3Editor\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ID3Lib\Documents\id3v2.3.0.htm" />
+    <Content Include="ID3Lib\Documents\id3v2_4_0-frames.txt" />
+    <Content Include="ID3Lib\Documents\id3v2_4_0-structure.txt" />
+    <Content Include="ID3Lib\Documents\MP3FileFormat.html" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
