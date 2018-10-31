@@ -16,3 +16,9 @@ C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.csproj.CopyC
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.exe
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.pdb
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\YoutubeExtractor.pdb
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Net.Http.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Security.Cryptography.Algorithms.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Security.Cryptography.Encoding.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Security.Cryptography.Primitives.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Security.Cryptography.X509Certificates.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Xml.ReaderWriter.dll
