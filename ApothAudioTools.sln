@@ -4,6 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApothAudioTools", "ApothAudioTools\ApothAudioTools.csproj", "{366191C1-AE82-4082-87CE-67B6662CA0AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{72E9392F-D4FF-40BD-B1AC-318EC1F15F72} = {72E9392F-D4FF-40BD-B1AC-318EC1F15F72}
+		{3F2AE2E1-3101-4998-BC94-8E84756BA2EF} = {3F2AE2E1-3101-4998-BC94-8E84756BA2EF}
+		{1072DDE5-BFEB-4E85-BF9F-46D1B214D596} = {1072DDE5-BFEB-4E85-BF9F-46D1B214D596}
+		{051B7CF5-93E7-4778-A132-D458A0D10133} = {051B7CF5-93E7-4778-A132-D458A0D10133}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeExtractor", "YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor.csproj", "{ECDC127F-8DEF-4F99-8300-72C13597339D}"
 EndProject

@@ -1,4 +1,7 @@
-﻿using MediaToolkit;
+﻿using Id3.Net;
+using Id3.Net.Frames;
+using Id3.Net.Id3v23;
+using MediaToolkit;
 using MediaToolkit.Model;
 using System;
 using System.Collections.Generic;
@@ -142,7 +145,15 @@ namespace ApothAudioTools
                      if (File.Exists(videoFilePath) && SkipVideosWhichExists)
                      {
                          Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
-                         return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                         return new DownloadResult()
+                         {
+                             VideoSavedFilePath = videoFilePath,
+                             GUID = linkInfo.GUID,
+                             AudioSavedFilePath = null,
+                             FileBaseName = videoName,
+                             DownloadSkipped = true,
+                             IsId3Tagged = false
+                         };
                      }
 
                      //test if the converted audio exists
@@ -152,7 +163,15 @@ namespace ApothAudioTools
                      {
                          //don't download
                          Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
-                         return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                         return new DownloadResult()
+                         {
+                             VideoSavedFilePath = videoFilePath,
+                             GUID = linkInfo.GUID,
+                             AudioSavedFilePath = null,
+                             FileBaseName = videoName,
+                             DownloadSkipped = true,
+                             IsId3Tagged = false
+                         };
                      }
 
                      DownloadVideo(videoInfo, linkInfo.GUID, videoFilePath);
@@ -165,11 +184,19 @@ namespace ApothAudioTools
                          }
                          else
                          {
-                             Console.WriteLine("Video is empty, abandoning task...");
-                             tasks.RemoveAt((int)Task.CurrentId);
-                             return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
-                         }
-                         
+                             //Console.WriteLine("Video is empty, abandoning task...");
+                             Console.WriteLine("Video is empty, skipping task...");
+                             //tasks.RemoveAt((int)Task.CurrentId);
+                             return new DownloadResult()
+                             {
+                                 VideoSavedFilePath = videoFilePath,
+                                 GUID = linkInfo.GUID,
+                                 AudioSavedFilePath = null,
+                                 FileBaseName = videoName,
+                                 DownloadSkipped = true,
+                                 IsId3Tagged = false
+                             };
+                         }                         
                      }
 
                      if (ExportOptions.HasFlag(ExportOptions.ExportAudio))
@@ -182,18 +209,32 @@ namespace ApothAudioTools
                          {
                              Console.WriteLine("Video is empty, abandoning task...");
                              tasks.RemoveAt((int)Task.CurrentId);
-                             return new DownloadResult() { VideoSavedFilePath = videoFilePath, GUID = linkInfo.GUID, AudioSavedFilePath = null, FileBaseName = videoName, DownloadSkipped = true };
+                             return new DownloadResult()
+                             {
+                                 VideoSavedFilePath = videoFilePath,
+                                 GUID = linkInfo.GUID,
+                                 AudioSavedFilePath = null,
+                                 FileBaseName = videoName,
+                                 DownloadSkipped = true,
+                                 IsId3Tagged = false
+                             };
                          }
                      }
+
+                     var transformedAudioPath = TransformToAudioPath(videoFilePath, videoInfo.VideoExtension);
+                     //// tag the download
+                     //ID3TagSingleDownload(transformedAudioPath, videoInfo);
 
                      return new DownloadResult()
                      {
                          VideoSavedFilePath = videoFilePath,
                          GUID = linkInfo.GUID,
-                         AudioSavedFilePath = TransformToAudioPath(videoFilePath, videoInfo.VideoExtension),
+                         AudioSavedFilePath = transformedAudioPath,
                          FileBaseName = videoName,
-                         DownloadSkipped = false
+                         DownloadSkipped = false,
+                         IsId3Tagged = true
                      };
+
                  }, token);
 
                 tasks.Add(downloadTask);
@@ -258,7 +299,9 @@ namespace ApothAudioTools
             Action<AudioConvertingEventArgs> beforeAction;
 
             if (beforeConvertingActions.TryGetValue(linkInfo.GUID, out beforeAction))
+            {
                 beforeConvertingActions[linkInfo.GUID].Invoke(new AudioConvertingEventArgs() { GUID = linkInfo.GUID, AudioSavedFilePath = audioOutputPath });
+            }                
 
             var inputFile = new MediaFile { Filename = videoFilePath };
             var outputFile = new MediaFile { Filename = audioOutputPath };
@@ -270,7 +313,9 @@ namespace ApothAudioTools
             Action<AudioConvertingEventArgs> afterAction;
 
             if (afterConvertingActions.TryGetValue(linkInfo.GUID, out afterAction))
+            {
                 afterConvertingActions[linkInfo.GUID].Invoke(new AudioConvertingEventArgs() { GUID = linkInfo.GUID, AudioSavedFilePath = audioOutputPath });
+            }                
 
             engine.Dispose();
         }
@@ -281,6 +326,69 @@ namespace ApothAudioTools
                                     .Replace(ExportVideoDirPath, ExportAudioDirPath)
                                     .ReplaceLastOccurrence(videoExtension, ".mp3");
             return audioOutputPath;
+        }
+
+        private void ID3TagSingleDownload(string musicFile, VideoInfo videoinfo)
+        {
+            //  make sure there is a file
+            if (musicFile != null)
+            {
+                //  tag it
+                using (var mp3 = new Mp3File(musicFile))
+                {
+                    Id3Tag tag = mp3.GetTag(Id3TagFamily.FileEndTag);
+                    //Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2x);
+
+                    //  TODO:   check if the tag exists, if not we will have to build one
+
+                    if (tag != null)
+                    {
+                        Console.WriteLine("Title: {0}", tag.Title.Value);
+                        Console.WriteLine("Artist: {0}", tag.Artists.Value);
+                        Console.WriteLine("Album: {0}", tag.Album.Value);
+                    }
+                    else
+                    {
+                        Id3FrameBuilder id3FrameBuilder = new Id3FrameBuilder();
+                        //tag = new Id3Tag();
+                        tag = Id3Tag.Create<Id3v23Tag>();
+
+                        //  build major and minor versions first off
+                        tag.MajorVersion = 1;
+                        tag.MinorVersion = 1;
+
+                        tag.Artists.Value = id3FrameBuilder.BuildArtistFrame(videoinfo.Title);
+                        //tag.AudioFileUrl //not implemented yet
+                        
+                        tag.Title.Value = id3FrameBuilder.BuildTitleFrame(videoinfo.Title);
+
+                        //  TODO:   write the tag now that it has values
+                        //mp3.WriteTag(tag, WriteConflictAction.NoAction);
+                        mp3.WriteTag(tag, 1, 1, WriteConflictAction.NoAction);
+                    }
+                }
+            }
+        }
+
+        private void ID3TagDownloadDirectory(string[] musicFiles)
+        {
+            //set the scan directory if musicFiles is empty
+            if (musicFiles == null)
+            {
+                //  TODO:   set the directory in the app/web page
+                musicFiles = Directory.GetFiles(@"C:\Users\david.waidmann\Downloads\Productivity\", "*.mp3");
+            }
+
+            foreach (string musicFile in musicFiles)
+            {
+                using (var mp3 = new Mp3File(musicFile))
+                {
+                    Id3Tag tag = mp3.GetTag(Id3TagFamily.FileStartTag);
+                    Console.WriteLine("Title: {0}", tag.Title.Value);
+                    Console.WriteLine("Artist: {0}", tag.Artists.Value);
+                    Console.WriteLine("Album: {0}", tag.Album.Value);
+                }
+            }
         }
     }
 }

@@ -32,5 +32,11 @@ namespace ApothAudioTools
         /// gets or sets the GUID
         /// </summary>
         public Guid GUID { get; set; }
+
+        /// <summary>
+        /// gets or sets if the Download Result has been tagged
+        /// allow nulls
+        /// </summary>
+        public bool? IsId3Tagged { get; set; }
     }
 }

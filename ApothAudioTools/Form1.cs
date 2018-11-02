@@ -204,6 +204,7 @@ namespace ApothAudioTools
 
         public void AsyncDownload(List<LinkInfo> linkinfoList)
         {
+            //  TODO:   set the directory in the app/web page
             string exportVideoPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
             string exportAudioPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
 
