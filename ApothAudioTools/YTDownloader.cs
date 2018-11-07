@@ -223,7 +223,7 @@ namespace ApothAudioTools
 
                      var transformedAudioPath = TransformToAudioPath(videoFilePath, videoInfo.VideoExtension);
                      //// tag the download
-                     //ID3TagSingleDownload(transformedAudioPath, videoInfo);
+                     ID3TagSingleDownload(transformedAudioPath, videoInfo);
 
                      return new DownloadResult()
                      {
@@ -251,6 +251,10 @@ namespace ApothAudioTools
                 ?.OrderByDescending(info => info.AudioBitrate)
                 ?.First();
 
+            string fileBaseName = string.Empty;
+            videoFilePath = string.Empty;
+            videoName = string.Empty;
+
             //wrap whole thing in null object check
             if (videoInfo != null)
             {
@@ -259,26 +263,11 @@ namespace ApothAudioTools
                 {
                     DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
                 }
-            }
-
-            //string fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
-            string fileBaseName = string.Empty;
-
-            //null check the info again
-            if (videoInfo != null)
-            {
+                
                 fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
-            }
-
-            videoName = fileBaseName;
-
-            //videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);                    
-            videoFilePath = string.Empty;
-
-            //null check the info again
-            if (videoInfo != null)
-            {
+                videoName = fileBaseName;
                 videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);
+                return videoInfo;
             }
 
             return videoInfo;
@@ -336,36 +325,25 @@ namespace ApothAudioTools
                 //  tag it
                 using (var mp3 = new Mp3File(musicFile))
                 {
-                    Id3Tag tag = mp3.GetTag(Id3TagFamily.FileEndTag);
+                    //Id3Tag tag = mp3.GetTag(Id3TagFamily.FileEndTag);
                     //Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2x);
+                    //Id3Tag tag = Id3Tag.Create(2, 1);
+                    Id3Tag tag = Id3Tag.Create<Id3v23Tag>();
 
-                    //  TODO:   check if the tag exists, if not we will have to build one
+                    Id3FrameBuilder id3FrameBuilder = new Id3FrameBuilder();
 
-                    if (tag != null)
-                    {
-                        Console.WriteLine("Title: {0}", tag.Title.Value);
-                        Console.WriteLine("Artist: {0}", tag.Artists.Value);
-                        Console.WriteLine("Album: {0}", tag.Album.Value);
-                    }
-                    else
-                    {
-                        Id3FrameBuilder id3FrameBuilder = new Id3FrameBuilder();
-                        //tag = new Id3Tag();
-                        tag = Id3Tag.Create<Id3v23Tag>();
+                    //  build major and minor versions first off
+                    tag.MajorVersion = 1;
+                    tag.MinorVersion = 1;
 
-                        //  build major and minor versions first off
-                        tag.MajorVersion = 1;
-                        tag.MinorVersion = 1;
-
-                        tag.Artists.Value = id3FrameBuilder.BuildArtistFrame(videoinfo.Title);
-                        //tag.AudioFileUrl //not implemented yet
+                    tag.Artists.Value = id3FrameBuilder.BuildArtistFrame(videoinfo.Title);
+                    //tag.AudioFileUrl //not implemented yet
                         
-                        tag.Title.Value = id3FrameBuilder.BuildTitleFrame(videoinfo.Title);
+                    tag.Title.Value = id3FrameBuilder.BuildTitleFrame(videoinfo.Title);
 
-                        //  TODO:   write the tag now that it has values
-                        //mp3.WriteTag(tag, WriteConflictAction.NoAction);
-                        mp3.WriteTag(tag, 1, 1, WriteConflictAction.NoAction);
-                    }
+                    //  TODO:   write the tag now that it has values
+                    mp3.WriteTag(tag, WriteConflictAction.NoAction);
+                    //mp3.WriteTag(tag, 2, 1, WriteConflictAction.NoAction);
                 }
             }
         }

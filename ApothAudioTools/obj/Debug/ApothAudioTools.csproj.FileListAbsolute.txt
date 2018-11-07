@@ -31,3 +31,4 @@ C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Newtonsoft.Json.xml
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.csproj.CopyComplete
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.exe
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.pdb
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Newtonsoft.Json.pdb
