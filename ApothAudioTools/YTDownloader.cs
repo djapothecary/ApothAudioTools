@@ -184,9 +184,7 @@ namespace ApothAudioTools
                          }
                          else
                          {
-                             //Console.WriteLine("Video is empty, abandoning task...");
                              Console.WriteLine("Video is empty, skipping task...");
-                             //tasks.RemoveAt((int)Task.CurrentId);
                              return new DownloadResult()
                              {
                                  VideoSavedFilePath = videoFilePath,
@@ -261,7 +259,6 @@ namespace ApothAudioTools
                 }
             }
 
-            //string fileBaseName = linkInfo.FileName == null ? videoInfo.Title.ToSafeFileName() : linkInfo.FileName.ToSafeFileName();
             string fileBaseName = string.Empty;
 
             //null check the info again
@@ -271,8 +268,7 @@ namespace ApothAudioTools
             }
 
             videoName = fileBaseName;
-
-            //videoFilePath = Path.Combine(ExportVideoDirPath, fileBaseName + videoInfo.VideoExtension);                    
+            
             videoFilePath = string.Empty;
 
             //null check the info again
