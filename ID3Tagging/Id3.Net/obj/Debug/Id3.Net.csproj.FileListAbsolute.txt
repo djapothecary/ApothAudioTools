@@ -1,0 +1,7 @@
+C:\Source\output\Debug\Id3.Net.dll
+C:\Source\output\Debug\Id3.Net.pdb
+C:\Source\ID3.Net\Id3.Net\obj\Debug\Id3.Net.Resources.Id3Messages.resources
+C:\Source\ID3.Net\Id3.Net\obj\Debug\Id3.Net.csproj.GenerateResource.cache
+C:\Source\ID3.Net\Id3.Net\obj\Debug\Id3.Net.csproj.CoreCompileInputs.cache
+C:\Source\ID3.Net\Id3.Net\obj\Debug\Id3.Net.dll
+C:\Source\ID3.Net\Id3.Net\obj\Debug\Id3.Net.pdb
