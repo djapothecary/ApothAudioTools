@@ -87,7 +87,7 @@ namespace ApothAudioTools
              * We want the first extractable video with the highest audio quality.
              */
             VideoInfo video = videos
-                //.Where(info => info.CanExtractAudio)
+                .Where(info => info.CanExtractAudio)
                 .OrderByDescending(info => info.AudioBitrate)
                 .First();
 
@@ -145,8 +145,8 @@ namespace ApothAudioTools
 
         public void SingleSyncDownload(string link)
         {
-            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
-            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
+            string exportVideoPath = @"C:\Downloads\";
+            string exportAudioPath = @"C:\Downloads\";
 
             var link1 = new LinkInfo(link);
 
@@ -205,8 +205,8 @@ namespace ApothAudioTools
         public void AsyncDownload(List<LinkInfo> linkinfoList)
         {
             //  TODO:   set the directory in the app/web page
-            string exportVideoPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
-            string exportAudioPath = @"C:\Users\david.waidmann\Downloads\Productivity\";
+            string exportVideoPath = @"C:\Users\djapo\Downloads";
+            string exportAudioPath = @"C:\Users\djapo\Downloads";
 
             var downloader = new YTDownloaderBuilder()
                 .SetExportAudioPath(exportAudioPath)    //required

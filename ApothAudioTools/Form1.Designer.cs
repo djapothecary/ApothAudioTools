@@ -41,41 +41,46 @@
             // lblUrl
             // 
             this.lblUrl.AutoSize = true;
-            this.lblUrl.Location = new System.Drawing.Point(58, 37);
+            this.lblUrl.Location = new System.Drawing.Point(77, 46);
+            this.lblUrl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUrl.Name = "lblUrl";
-            this.lblUrl.Size = new System.Drawing.Size(23, 13);
+            this.lblUrl.Size = new System.Drawing.Size(30, 17);
             this.lblUrl.TabIndex = 0;
             this.lblUrl.Text = "Url:";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(30, 69);
+            this.label1.Location = new System.Drawing.Point(40, 85);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.Size = new System.Drawing.Size(69, 17);
             this.label1.TabIndex = 2;
             this.label1.Text = "Progress:";
             // 
             // tbxUrl
             // 
-            this.tbxUrl.Location = new System.Drawing.Point(87, 30);
+            this.tbxUrl.Location = new System.Drawing.Point(116, 37);
+            this.tbxUrl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tbxUrl.Name = "tbxUrl";
-            this.tbxUrl.Size = new System.Drawing.Size(660, 20);
+            this.tbxUrl.Size = new System.Drawing.Size(879, 22);
             this.tbxUrl.TabIndex = 3;
             // 
             // progressBar
             // 
             this.progressBar.ForeColor = System.Drawing.Color.Lime;
-            this.progressBar.Location = new System.Drawing.Point(87, 65);
+            this.progressBar.Location = new System.Drawing.Point(116, 80);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(618, 17);
+            this.progressBar.Size = new System.Drawing.Size(824, 21);
             this.progressBar.TabIndex = 5;
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(672, 133);
+            this.btnDownload.Location = new System.Drawing.Point(896, 164);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(75, 23);
+            this.btnDownload.Size = new System.Drawing.Size(100, 28);
             this.btnDownload.TabIndex = 6;
             this.btnDownload.Text = "Download";
             this.btnDownload.UseVisualStyleBackColor = true;
@@ -84,28 +89,32 @@
             // lblPercentage
             // 
             this.lblPercentage.AutoSize = true;
-            this.lblPercentage.Location = new System.Drawing.Point(712, 69);
+            this.lblPercentage.Location = new System.Drawing.Point(949, 85);
+            this.lblPercentage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPercentage.Name = "lblPercentage";
-            this.lblPercentage.Size = new System.Drawing.Size(21, 13);
+            this.lblPercentage.Size = new System.Drawing.Size(28, 17);
             this.lblPercentage.TabIndex = 7;
             this.lblPercentage.Text = "0%";
             // 
             // tbxLinkList
             // 
-            this.tbxLinkList.Location = new System.Drawing.Point(35, 100);
+            this.tbxLinkList.Location = new System.Drawing.Point(47, 123);
+            this.tbxLinkList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tbxLinkList.MaxLength = 92767;
             this.tbxLinkList.Multiline = true;
             this.tbxLinkList.Name = "tbxLinkList";
             this.tbxLinkList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxLinkList.Size = new System.Drawing.Size(615, 55);
+            this.tbxLinkList.Size = new System.Drawing.Size(819, 67);
             this.tbxLinkList.TabIndex = 10;
             this.tbxLinkList.Visible = false;
             // 
             // cbxAddList
             // 
             this.cbxAddList.AutoSize = true;
-            this.cbxAddList.Location = new System.Drawing.Point(672, 100);
+            this.cbxAddList.Location = new System.Drawing.Point(896, 123);
+            this.cbxAddList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cbxAddList.Name = "cbxAddList";
-            this.cbxAddList.Size = new System.Drawing.Size(67, 17);
+            this.cbxAddList.Size = new System.Drawing.Size(85, 21);
             this.cbxAddList.TabIndex = 11;
             this.cbxAddList.Text = "Add List:";
             this.cbxAddList.UseVisualStyleBackColor = true;
@@ -113,9 +122,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 175);
+            this.ClientSize = new System.Drawing.Size(1067, 215);
             this.Controls.Add(this.cbxAddList);
             this.Controls.Add(this.tbxLinkList);
             this.Controls.Add(this.lblPercentage);
@@ -124,6 +133,7 @@
             this.Controls.Add(this.tbxUrl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblUrl);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Download Youtube Video";
             this.ResumeLayout(false);

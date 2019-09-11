@@ -1,6 +1,6 @@
-﻿using Id3.Net;
-using Id3.Net.Frames;
-using Id3.Net.Id3v23;
+﻿//using Id3.Net;
+//using Id3.Net.Frames;
+//using Id3.Net.Id3v23;
 using MediaToolkit;
 using MediaToolkit.Model;
 using System;
@@ -308,8 +308,11 @@ namespace ApothAudioTools
 
             var engine = engines[linkInfo.GUID];
 
+            //if (inputFile.Metadata != null)
+            //{
+            //    engine.Convert(inputFile, outputFile);
+            //}
             engine.Convert(inputFile, outputFile);
-
             Action<AudioConvertingEventArgs> afterAction;
 
             if (afterConvertingActions.TryGetValue(linkInfo.GUID, out afterAction))
@@ -328,67 +331,57 @@ namespace ApothAudioTools
             return audioOutputPath;
         }
 
-        private void ID3TagSingleDownload(string musicFile, VideoInfo videoinfo)
-        {
-            //  make sure there is a file
-            if (musicFile != null)
-            {
-                //  tag it
-                using (var mp3 = new Mp3File(musicFile))
-                {
-                    Id3Tag tag = mp3.GetTag(Id3TagFamily.FileEndTag);
-                    //Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2x);
+        //private void ID3TagSingleDownload(string musicFile, VideoInfo videoinfo)
+        //{
+        //    //  make sure there is a file
+        //    if (musicFile != null)
+        //    {
+        //        //  tag it
+        //        using (var mp3 = new Mp3File(musicFile))
+        //        {
+        //            //Id3Tag tag = mp3.GetTag(Id3TagFamily.FileEndTag);
+        //            //Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2x);
+        //            Id3Tag tag = Id3Tag.Create(2, 1);                    
+                    
+        //            Id3FrameBuilder id3FrameBuilder = new Id3FrameBuilder();
+        //            //tag = new Id3Tag();
+        //            tag = Id3Tag.Create<Id3v23Tag>();
 
-                    //  TODO:   check if the tag exists, if not we will have to build one
+        //            //  build major and minor versions first off
+        //            tag.MajorVersion = 1;
+        //            tag.MinorVersion = 1;
 
-                    if (tag != null)
-                    {
-                        Console.WriteLine("Title: {0}", tag.Title.Value);
-                        Console.WriteLine("Artist: {0}", tag.Artists.Value);
-                        Console.WriteLine("Album: {0}", tag.Album.Value);
-                    }
-                    else
-                    {
-                        Id3FrameBuilder id3FrameBuilder = new Id3FrameBuilder();
-                        //tag = new Id3Tag();
-                        tag = Id3Tag.Create<Id3v23Tag>();
-
-                        //  build major and minor versions first off
-                        tag.MajorVersion = 1;
-                        tag.MinorVersion = 1;
-
-                        tag.Artists.Value = id3FrameBuilder.BuildArtistFrame(videoinfo.Title);
-                        //tag.AudioFileUrl //not implemented yet
+        //            tag.Artists.Value = id3FrameBuilder.BuildArtistFrame(videoinfo.Title);
+        //            //tag.AudioFileUrl //not implemented yet
                         
-                        tag.Title.Value = id3FrameBuilder.BuildTitleFrame(videoinfo.Title);
+        //            tag.Title.Value = id3FrameBuilder.BuildTitleFrame(videoinfo.Title);
 
-                        //  TODO:   write the tag now that it has values
-                        //mp3.WriteTag(tag, WriteConflictAction.NoAction);
-                        mp3.WriteTag(tag, 1, 1, WriteConflictAction.NoAction);
-                    }
-                }
-            }
-        }
+        //            //  TODO:   write the tag now that it has values
+        //            //mp3.WriteTag(tag, WriteConflictAction.NoAction);
+        //            mp3.WriteTag(tag, 2, 1, WriteConflictAction.NoAction);
+        //        }
+        //    }
+        //}
 
-        private void ID3TagDownloadDirectory(string[] musicFiles)
-        {
-            //set the scan directory if musicFiles is empty
-            if (musicFiles == null)
-            {
-                //  TODO:   set the directory in the app/web page
-                musicFiles = Directory.GetFiles(@"C:\Users\david.waidmann\Downloads\Productivity\", "*.mp3");
-            }
+        //private void ID3TagDownloadDirectory(string[] musicFiles)
+        //{
+        //    //set the scan directory if musicFiles is empty
+        //    if (musicFiles == null)
+        //    {
+        //        //  TODO:   set the directory in the app/web page
+        //        musicFiles = Directory.GetFiles(@"C:\Users\david.waidmann\Downloads\Productivity\", "*.mp3");
+        //    }
 
-            foreach (string musicFile in musicFiles)
-            {
-                using (var mp3 = new Mp3File(musicFile))
-                {
-                    Id3Tag tag = mp3.GetTag(Id3TagFamily.FileStartTag);
-                    Console.WriteLine("Title: {0}", tag.Title.Value);
-                    Console.WriteLine("Artist: {0}", tag.Artists.Value);
-                    Console.WriteLine("Album: {0}", tag.Album.Value);
-                }
-            }
-        }
+        //    foreach (string musicFile in musicFiles)
+        //    {
+        //        using (var mp3 = new Mp3File(musicFile))
+        //        {
+        //            Id3Tag tag = mp3.GetTag(Id3TagFamily.FileStartTag);
+        //            Console.WriteLine("Title: {0}", tag.Title.Value);
+        //            Console.WriteLine("Artist: {0}", tag.Artists.Value);
+        //            Console.WriteLine("Album: {0}", tag.Album.Value);
+        //        }
+        //    }
+        //}
     }
 }

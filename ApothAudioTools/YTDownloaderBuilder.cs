@@ -43,7 +43,8 @@ namespace ApothAudioTools
             this.ExportOptions = ExportOptions.ExportVideo | ExportOptions.ExportAudio;
             this.ExportAudioDirPath = null;
             this.ExportVideoDirPath = null;
-            this.SkipVideosWhichExists = false;
+            //this.SkipVideosWhichExists = false;
+            this.SkipVideosWhichExists = true;
         }
 
         public YTDownloader Build()
