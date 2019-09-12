@@ -1,6 +1,7 @@
 ﻿//using Id3.Net;
 //using Id3.Net.Frames;
 //using Id3.Net.Id3v23;
+using ApothAudioTools.Utilities;
 using MediaToolkit;
 using MediaToolkit.Model;
 using System;
@@ -145,6 +146,7 @@ namespace ApothAudioTools
                      if (File.Exists(videoFilePath) && SkipVideosWhichExists)
                      {
                          Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
+                         LogWriter.LogWrite("Skipping download for file:  " + videoInfo.Title.ToString());
                          return new DownloadResult()
                          {
                              VideoSavedFilePath = videoFilePath,
@@ -163,6 +165,7 @@ namespace ApothAudioTools
                      {
                          //don't download
                          Console.WriteLine("Skipping download for file:  " + videoInfo.Title.ToString());
+                         LogWriter.LogWrite("Skipping download for file:  " + videoInfo.Title.ToString());
                          return new DownloadResult()
                          {
                              VideoSavedFilePath = videoFilePath,
@@ -304,11 +307,12 @@ namespace ApothAudioTools
 
             var engine = engines[linkInfo.GUID];
 
-            //if (inputFile.Metadata != null)
-            //{
-            //    engine.Convert(inputFile, outputFile);
-            //}
-            engine.Convert(inputFile, outputFile);
+            if (inputFile.Metadata != null)
+            {
+                LogWriter.LogWrite("skipping conversion for " + inputFile.Filename);
+                //engine.Convert(inputFile, outputFile);
+            }
+            // engine.Convert(inputFile, outputFile);
             Action<AudioConvertingEventArgs> afterAction;
 
             if (afterConvertingActions.TryGetValue(linkInfo.GUID, out afterAction))
