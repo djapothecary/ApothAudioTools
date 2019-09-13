@@ -40,6 +40,11 @@ namespace ApothAudioTools
                 //TODO: Parse list
                 var linkList = tbxLinkList.Text;
 
+                if (linkList == "Convert audio files")
+                {
+                    Convert();
+                }
+
                 var listParser = new Utilities.ListParser();
                 var linkinfoList = listParser.BuildList(linkList);
 
@@ -203,6 +208,29 @@ namespace ApothAudioTools
                 Console.WriteLine("Converting audio complete");
             });
         }
+
+        public void Convert()
+        {
+            string convertDir = @"C:\Users\djapo\Downloads\convert";
+            DirectoryInfo di = new DirectoryInfo(convertDir);
+
+            foreach (var file in di.GetFiles("*.mp4"))
+            {
+                var inputFile = new MediaFile { Filename = file.FullName };
+                var outputFile = new MediaFile { Filename = $"{file.FullName}.mp3" };
+
+                using (var engine = new Engine())
+                {
+                    engine.GetMetadata(inputFile);
+
+                    if (inputFile.Metadata != null)
+                    {
+                        engine.Convert(inputFile, outputFile);
+                    }
+                }
+            }            
+        }
+  
 
         public async Task AsyncDownloadAsync(List<LinkInfo> linkinfoList)
         {
