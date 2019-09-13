@@ -9,7 +9,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VideoLibrary;
+using ApothVidLib;
 using YoutubeExtractor;
 
 namespace ApothAudioTools
@@ -43,7 +43,7 @@ namespace ApothAudioTools
                 var listParser = new Utilities.ListParser();
                 var linkinfoList = listParser.BuildList(linkList);
 
-                AsyncDownload(linkinfoList);
+                AsyncDownloadAsync(linkinfoList);
             }            
 
             tbxUrl.ResetText();
@@ -73,7 +73,7 @@ namespace ApothAudioTools
             }
 
             //download video
-            VideoDownloader downloader = new VideoDownloader(video, Path.Combine(@"C:\Users\david.waidmann\Downloads\", video.Title + video.VideoExtension));
+            VideoDownloader downloader = new VideoDownloader(video, Path.Combine(@"C:\Users\djapo\Downloads\", video.Title + video.VideoExtension));
             downloader.DownloadProgressChanged += Downloader_DownloadProgressChanged;
 
             //create a new thread to download the file
@@ -88,7 +88,6 @@ namespace ApothAudioTools
              */
             VideoInfo video = videos
                 .Where(info => info.CanExtractAudio)
-                .OrderByDescending(info => info.AudioBitrate)
                 .First();
 
             /*
@@ -104,7 +103,7 @@ namespace ApothAudioTools
              * The first argument is the video where the audio should be extracted from.
              * The second argument is the path to save the audio file.
              */
-            var audioDownloader = new AudioDownloader(video, Path.Combine(@"C:\Users\david.waidmann\Downloads\", video.Title + video.AudioExtension));
+            var audioDownloader = new AudioDownloader(video, Path.Combine(@"C:\Users\djapo\Downloads\", video.Title + video.AudioExtension));
 
             // Register the progress events. We treat the download progress as 85% of the progress and the extraction progress only as 15% of the progress,
             // because the download will take much longer than the audio extraction.
@@ -120,9 +119,9 @@ namespace ApothAudioTools
 
         public void MediaDownloader()
         {
-            var source = @"C:\Users\david.waidmann\Downloads\";
-            var youtube = YouTube.Default;
-            //var vid = youtube.GetVideo("<video url>");
+            var source = @"C:\Users\djapo\Downloads\";
+            var youtube = ApothVidLib.YouTube.Default;
+            //var vid = youtube.GetVideo(" < video url>");
 
             //sender.ProtocolVersion = HttpVersion.Version10; // THIS DOES THE TRICK
             ServicePointManager.Expect100Continue = true;
@@ -139,7 +138,10 @@ namespace ApothAudioTools
             {
                 engine.GetMetadata(inputFile);
 
-                engine.Convert(inputFile, outputFile);
+                if (inputFile.Metadata != null)
+                {
+                    engine.Convert(inputFile, outputFile);
+                }                
             }
         }
 
@@ -202,58 +204,133 @@ namespace ApothAudioTools
             });
         }
 
-        public void AsyncDownload(List<LinkInfo> linkinfoList)
+        public async Task AsyncDownloadAsync(List<LinkInfo> linkinfoList)
         {
             //  TODO:   set the directory in the app/web page
             string exportVideoPath = @"C:\Users\djapo\Downloads";
-            string exportAudioPath = @"C:\Users\djapo\Downloads";
+            string exportAudioPath = @"C:\Users\djapo\Downloads";            
 
+            foreach (var link in linkinfoList)
+            {
+                try
+                {
+                    //// trying new library here
+                    var youTube = ApothVidLib.YouTube.Default;
+                    var video = youTube.GetVideo(link.URL);  //try as async
+                    //var videos = await youTube.GetVideoAsync(link.URL);                   
+
+                    MediaConverter(video, linkinfoList, link, exportVideoPath, exportAudioPath);
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
+        public void YTDownloader(List<LinkInfo> linkinfoList, LinkInfo link, string exportVideoPath, string exportAudioPath)
+        {
             var downloader = new YTDownloaderBuilder()
                 .SetExportAudioPath(exportAudioPath)    //required
                 .SetExportVideoPath(exportVideoPath)    //required
                 .SetExportOptions(ExportOptions.ExportVideo | ExportOptions.ExportAudio)    //default
                 .SetSkipDownloadIfFileExists(false) //default
                 .SetLinks(linkinfoList)    //check other overloads
-                .Build();            
+                .Build();
 
             Task<DownloadResult[]> results = downloader.DownloadLinksAsync(CancellationToken.None); // process download
 
-            foreach (var link in linkinfoList)
+            downloader.AddDownloadStartedAction(link.GUID, (evArgs) =>
             {
-                downloader.AddDownloadStartedAction(link.GUID, (evArgs) =>
-                {
-                    Console.WriteLine("DOWNLOAD STARTED");
-                });
+                Console.WriteLine("DOWNLOAD STARTED");
+            });
 
-                downloader.AddDownloadFinishedAction(link.GUID, (evArgs) =>
-                {
-                    Console.WriteLine("DOWNLOAD FINISHED");
-                });
+            downloader.AddDownloadFinishedAction(link.GUID, (evArgs) =>
+            {
+                Console.WriteLine("DOWNLOAD FINISHED");
+            });
 
-                downloader.AddDownloadProgressChangedAction(link.GUID, (progressArgs) =>
+            downloader.AddDownloadProgressChangedAction(link.GUID, (progressArgs) =>
+            {
+                Invoke(new MethodInvoker(delegate ()
                 {
-                    Invoke(new MethodInvoker(delegate ()
+                    progressBar.Value = (int)progressArgs.ProgressPercentage;
+                    lblPercentage.Text = $"{string.Format("{0:0.##}", progressArgs.ProgressPercentage)}%";
+                    progressBar.Update();
+                }));
+
+                //Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
+            });
+
+            downloader.AddDownloadFinishedAction(link.GUID, (evArgs) =>
+            {
+                Console.WriteLine("DOWNLOAD FINISHED");
+            });
+
+            downloader.AddDownloadProgressChangedAction(link.GUID, (progressArgs) =>
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    progressBar.Value = (int)progressArgs.ProgressPercentage;
+                    lblPercentage.Text = $"{string.Format("{0:0.##}", progressArgs.ProgressPercentage)}%";
+                    progressBar.Update();
+                }));
+
+                //Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
+            });
+
+            downloader.AddDownloadStartedAction(link.GUID, (convertArgs) =>
+            {
+                //Console.WriteLine("Converting audio to path:  " + convertArgs.AudioSavedFilePath);
+            });
+
+            downloader.AddAudioConvertingEndedAction(link.GUID, (convertArgs) =>
+            {
+                Console.WriteLine("Converting audio for link:  " + link.FileName + " completed.");
+                //tbxUrl.ResetText();
+                //progressBar.Value = 0;
+                //progressBar.Refresh();
+            });
+        }
+
+        public void MediaConverter(YouTubeVideo video, List<LinkInfo> linkinfoList, LinkInfo link, string exportAudioPath, string exportVideoPath)
+        {
+            var source = @"C:\Users\djapo\Downloads\";
+
+            var inputFile = new MediaFile { Filename = source + video.FullName };
+            var outputFile = new MediaFile { Filename = $"{source + video.FullName}.mp3" };
+
+            //TODO:  move file exists logic else where
+            //  only write the file if it's not in the download location
+            if (!File.Exists(outputFile.Filename))
+            {
+                using (var engine = new Engine())
+                {
+                    try
                     {
-                        progressBar.Value = (int)progressArgs.ProgressPercentage;
-                        lblPercentage.Text = $"{string.Format("{0:0.##}", progressArgs.ProgressPercentage)}%";
-                        progressBar.Update();
-                    }));
+                        engine.GetMetadata(inputFile);
+                    }                    
+                    catch
+                    {
+                        YTDownloader(linkinfoList, link, exportVideoPath, exportAudioPath);
+                    }
 
-                    //Console.WriteLine("Download for link:  " + link.URL + " " + progressArgs.ProgressPercentage + "%");
-                });
+                    if (inputFile.Metadata != null)
+                    {
+                        engine.Convert(inputFile, outputFile);
+                    }
+                    else
+                    {
+                        //YTDownloader(linkinfoList, link, exportVideoPath, exportAudioPath);
+                    }
+                }
+            }            
 
-                downloader.AddDownloadStartedAction(link.GUID, (convertArgs) =>
-                {
-                    //Console.WriteLine("Converting audio to path:  " + convertArgs.AudioSavedFilePath);
-                });
-
-                //downloader.AddAudioConvertingEndedAction(link.GUID, (convertArgs) =>
-                //{
-                //    Console.WriteLine("Converting audio for link:  " + link.FileName + " completed.");
-                //    //tbxUrl.ResetText();
-                //    //progressBar.Value = 0;
-                //    //progressBar.Refresh();
-                //});
+            // cleanup the video file if conversion was successful
+            if (File.Exists(outputFile.Filename))
+            {
+                File.Delete(inputFile.Filename);
             }
         }
 

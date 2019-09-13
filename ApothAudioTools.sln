@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Id3.Net.WinForms", "..\ID3.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Id3.Net.Wpf", "..\ID3.Net\Id3.Net.Wpf\Id3.Net.Wpf.csproj", "{3F2AE2E1-3101-4998-BC94-8E84756BA2EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApothVidLib", "libvideo\ApothVidLib.csproj", "{CF204C59-0650-4BAE-A969-D973FBBC390B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{3F2AE2E1-3101-4998-BC94-8E84756BA2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F2AE2E1-3101-4998-BC94-8E84756BA2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F2AE2E1-3101-4998-BC94-8E84756BA2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF204C59-0650-4BAE-A969-D973FBBC390B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF204C59-0650-4BAE-A969-D973FBBC390B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF204C59-0650-4BAE-A969-D973FBBC390B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF204C59-0650-4BAE-A969-D973FBBC390B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -213,7 +213,7 @@ namespace ApothAudioTools
                          else
                          {
                              Console.WriteLine("Video is empty, abandoning task...");
-                             tasks.RemoveAt((int)Task.CurrentId);
+                             //tasks.RemoveAt((int)Task.CurrentId);
                              return new DownloadResult()
                              {
                                  VideoSavedFilePath = videoFilePath,
@@ -251,7 +251,7 @@ namespace ApothAudioTools
             //VideoInfo videoInfo = videoInfos
             //    ?.OrderByDescending(info => info.AudioBitrate)
             //    ?.First();
-            VideoInfo videoInfo = videoInfos.First();  // prevent this from being null
+            VideoInfo videoInfo = (videoInfos?.First() == null) ? null : videoInfos.First();  // prevent this from being null
 
             //wrap whole thing in null object check
             if (videoInfo != null)
