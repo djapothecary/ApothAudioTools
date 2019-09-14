@@ -42,7 +42,11 @@ namespace ApothAudioTools
 
                 if (linkList == "Convert audio files")
                 {
-                    Convert();
+                    ConvertAsync();
+                }
+                else if (linkList == "Rename YouTube")
+                {
+                    RenameYouTube();
                 }
 
                 var listParser = new Utilities.ListParser();
@@ -209,28 +213,45 @@ namespace ApothAudioTools
             });
         }
 
-        public void Convert()
+        public async void ConvertAsync()
         {
             string convertDir = @"C:\Users\djapo\Downloads\convert";
             DirectoryInfo di = new DirectoryInfo(convertDir);
 
             foreach (var file in di.GetFiles("*.mp4"))
             {
-                var inputFile = new MediaFile { Filename = file.FullName };
-                var outputFile = new MediaFile { Filename = $"{file.FullName}.mp3" };
-
-                using (var engine = new Engine())
-                {
-                    engine.GetMetadata(inputFile);
-
-                    if (inputFile.Metadata != null)
-                    {
-                        engine.Convert(inputFile, outputFile);
-                    }
-                }
+                await AsyncConvertEngine(file);
             }            
         }
+
+        public async void RenameYouTube()
+        {
+            string convertDir = @"C:\Users\djapo\Downloads\convert";
+            DirectoryInfo di = new DirectoryInfo(convertDir);
+            FileInfo[] infos = di.GetFiles();
+
+            foreach (var file in infos)
+            {
+                File.Move(file.FullName, file.FullName.Replace(" - YouTube.mp3", ".mp3"));
+            }
+        }
   
+        public async Task AsyncConvertEngine(FileInfo file)
+        {
+            var inputFile = new MediaFile { Filename = file.FullName };
+            var outputFile = new MediaFile { Filename = file.FullName.Replace(".mp4", ".mp3") };
+
+            using (var engine = new Engine())
+            {
+                engine.GetMetadata(inputFile);
+
+                if (inputFile.Metadata != null)
+                {
+                    engine.Convert(inputFile, outputFile);
+                    File.Delete(inputFile.Filename);
+                }
+            }
+        }
 
         public async Task AsyncDownloadAsync(List<LinkInfo> linkinfoList)
         {
@@ -247,7 +268,11 @@ namespace ApothAudioTools
                     var video = youTube.GetVideo(link.URL);  //try as async
                     //var videos = await youTube.GetVideoAsync(link.URL);                   
 
-                    MediaConverter(video, linkinfoList, link, exportVideoPath, exportAudioPath);
+                    if (video != null)
+                    {
+                        File.WriteAllBytes(exportVideoPath +"\\" + video.FullName, video.GetBytes());
+                        MediaConverter(video, linkinfoList, link, exportVideoPath, exportAudioPath);
+                    }
 
                 }
                 catch (Exception ex)
@@ -327,7 +352,7 @@ namespace ApothAudioTools
             var source = @"C:\Users\djapo\Downloads\";
 
             var inputFile = new MediaFile { Filename = source + video.FullName };
-            var outputFile = new MediaFile { Filename = $"{source + video.FullName}.mp3" };
+            var outputFile = new MediaFile { Filename = source + video.FullName.Replace(".mp4", ".mp3") };
 
             //TODO:  move file exists logic else where
             //  only write the file if it's not in the download location
