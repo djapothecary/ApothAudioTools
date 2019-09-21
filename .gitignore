@@ -5,3 +5,4 @@
 *.lock
 /.vs/slnx.sqlite
 /.vs/slnx.sqlite-journal
+*.ide-wal
