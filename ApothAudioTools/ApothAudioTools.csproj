@@ -162,6 +162,10 @@
       <Project>{1072dde5-bfeb-4e85-bf9f-46d1b214d596}</Project>
       <Name>Id3.Net</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libvideo\ApothVidLib.csproj">
+      <Project>{cf204c59-0650-4bae-a969-d973fbbc390b}</Project>
+      <Name>ApothVidLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor.csproj">
       <Project>{ecdc127f-8def-4f99-8300-72c13597339d}</Project>
       <Name>YoutubeExtractor</Name>

@@ -23,3 +23,5 @@ C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.exe
 C:\Source\ApothAudioTools\ApothAudioTools\obj\Debug\ApothAudioTools.pdb
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Runtime.dll
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Runtime.Extensions.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\ApothVidLib.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\ApothVidLib.pdb

@@ -197,19 +197,23 @@ namespace ApothAudioTools
                                  DownloadSkipped = true,
                                  IsId3Tagged = false
                              };
-                         }                         
+                         }
                      }
+
+                     var transformedAudioPath = TransformToAudioPath(videoFilePath, videoInfo.VideoExtension);
+                     //// tag the download
+                     //ID3TagSingleDownload(transformedAudioPath, videoInfo);
 
                      if (ExportOptions.HasFlag(ExportOptions.ExportAudio))
                      {
-                         if (!string.IsNullOrEmpty(videoFilePath))
+                         if (!string.IsNullOrEmpty(videoFilePath)  && File.Exists(transformedAudioPath))
                          {
                              File.Delete(videoFilePath);
                          }
                          else
                          {
                              Console.WriteLine("Video is empty, abandoning task...");
-                             tasks.RemoveAt((int)Task.CurrentId);
+                             //tasks.RemoveAt((int)Task.CurrentId);
                              return new DownloadResult()
                              {
                                  VideoSavedFilePath = videoFilePath,
@@ -221,10 +225,6 @@ namespace ApothAudioTools
                              };
                          }
                      }
-
-                     var transformedAudioPath = TransformToAudioPath(videoFilePath, videoInfo.VideoExtension);
-                     //// tag the download
-                     //ID3TagSingleDownload(transformedAudioPath, videoInfo);
 
                      return new DownloadResult()
                      {
@@ -248,17 +248,22 @@ namespace ApothAudioTools
             IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(linkInfo.URL, false);
 
             // Select the first video by type with highest AudioBitrate
-            VideoInfo videoInfo = videoInfos
-                ?.OrderByDescending(info => info.AudioBitrate)
-                ?.First();
+            //VideoInfo videoInfo = videoInfos
+            //    ?.OrderByDescending(info => info.AudioBitrate)
+            //    ?.First();
+            VideoInfo videoInfo = (videoInfos?.First() == null) ? null : videoInfos.First();  // prevent this from being null
 
             //wrap whole thing in null object check
             if (videoInfo != null)
             {
                 // This is must, cause we decrypting only this video
+
+                // skipping since refactoring should make this obsolete
                 if (videoInfo.RequiresDecryption)
                 {
-                    DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
+                    LogWriter.LogWrite("For some reason " + videoInfo.Title + " needs decryption");
+                    Console.Write("For some reason " + videoInfo.Title + " needs decryption");
+                    //DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
                 }
             }
 
@@ -309,8 +314,8 @@ namespace ApothAudioTools
 
             if (inputFile.Metadata != null)
             {
-                LogWriter.LogWrite("skipping conversion for " + inputFile.Filename);
-                //engine.Convert(inputFile, outputFile);
+                //LogWriter.LogWrite("skipping conversion for " + inputFile.Filename);
+                engine.Convert(inputFile, outputFile);
             }
             // engine.Convert(inputFile, outputFile);
             Action<AudioConvertingEventArgs> afterAction;

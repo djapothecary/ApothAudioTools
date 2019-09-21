@@ -1,0 +1,5 @@
+C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.csproj.CoreCompileInputs.cache
+C:\Source\ApothAudioTools\libvideo\bin\Debug\ApothVidLib.dll
+C:\Source\ApothAudioTools\libvideo\bin\Debug\ApothVidLib.pdb
+C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.dll
+C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.pdb
