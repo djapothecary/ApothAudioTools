@@ -7,7 +7,7 @@ using ApothVidLib.Exceptions;
 
 namespace ApothVidLib.Helpers
 {
-    partial class Query : IDictionary<string, string>, IReadOnlyDictionary<string, string>
+    internal partial class Query : IDictionary<string, string>, IReadOnlyDictionary<string, string>
     {
         private int count;
         private readonly string baseUri;

@@ -48,11 +48,13 @@ namespace ApothAudioTools
                 {
                     RenameYouTube();
                 }
+                else
+                {
+                    var listParser = new Utilities.ListParser();
+                    var linkinfoList = listParser.BuildList(linkList);
 
-                var listParser = new Utilities.ListParser();
-                var linkinfoList = listParser.BuildList(linkList);
-
-                AsyncDownloadAsync(linkinfoList);
+                    AsyncDownloadAsync(linkinfoList);
+                }                    
             }            
 
             tbxUrl.ResetText();
@@ -78,7 +80,7 @@ namespace ApothAudioTools
 
             if (video.RequiresDecryption)
             {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
+                YoutubeExtractor.DownloadUrlResolver.DecryptDownloadUrl(video);
             }
 
             //download video
@@ -104,7 +106,7 @@ namespace ApothAudioTools
              */
             if (video.RequiresDecryption)
             {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
+                YoutubeExtractor.DownloadUrlResolver.DecryptDownloadUrl(video);
             }
 
             /*
@@ -129,7 +131,8 @@ namespace ApothAudioTools
         public void MediaDownloader()
         {
             var source = @"C:\Users\djapo\Downloads\";
-            var youtube = ApothVidLib.YouTube.Default;
+            //var youtube = ApothVidLib.DownloadUrlResolver.Default;
+            var youtube = YouTube.Default;
             //var vid = youtube.GetVideo(" < video url>");
 
             //sender.ProtocolVersion = HttpVersion.Version10; // THIS DOES THE TRICK
@@ -264,12 +267,18 @@ namespace ApothAudioTools
                 try
                 {
                     //// trying new library here
-                    var youTube = ApothVidLib.YouTube.Default;
+                    //var youTube = ApothVidLib.DownloadUrlResolver.Default;
+                    var youTube = YouTube.Default;
                     var video = youTube.GetVideo(link.URL);  //try as async
                     //var videos = await youTube.GetVideoAsync(link.URL);                   
 
                     if (video != null)
                     {
+                        if (video.FullName.EndsWith(" - YouTube"))
+                        {
+                            video.FullName.Replace(" - Youtube", "");
+                        }
+
                         File.WriteAllBytes(exportVideoPath +"\\" + video.FullName, video.GetBytes());
                         MediaConverter(video, linkinfoList, link, exportVideoPath, exportAudioPath);
                     }

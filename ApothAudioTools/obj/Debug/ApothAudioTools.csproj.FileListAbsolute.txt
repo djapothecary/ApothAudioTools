@@ -25,3 +25,10 @@ C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Runtime.dll
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\System.Runtime.Extensions.dll
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\ApothVidLib.dll
 C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\ApothVidLib.pdb
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.Extensions.dll
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.xml
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.Extensions.xml
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.xml
+C:\Source\ApothAudioTools\ApothAudioTools\bin\Debug\Newtonsoft.Json.xml

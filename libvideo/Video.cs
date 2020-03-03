@@ -35,8 +35,7 @@ namespace ApothVidLib
             }
         }
 
-        public Stream Stream() =>
-            StreamAsync().GetAwaiter().GetResult();
+        public Stream Stream() => StreamAsync().GetAwaiter().GetResult();
 
         public async Task<Stream> StreamAsync()
         {
@@ -47,7 +46,16 @@ namespace ApothVidLib
                     .ConfigureAwait(false);
             }
         }
-
+        public Stream Head() => HeadAsync().GetAwaiter().GetResult();
+        public async Task<Stream> HeadAsync()
+        {
+            using (var client = new VideoClient())
+            {
+                return await client
+                    .StreamAsync(this)
+                    .ConfigureAwait(false);
+            }
+        }
         public virtual string FileExtension
         {
             get

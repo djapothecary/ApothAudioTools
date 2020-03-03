@@ -3,3 +3,12 @@ C:\Source\ApothAudioTools\libvideo\bin\Debug\ApothVidLib.dll
 C:\Source\ApothAudioTools\libvideo\bin\Debug\ApothVidLib.pdb
 C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.dll
 C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.pdb
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.dll
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.dll
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.Extensions.dll
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.xml
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.Extensions.xml
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.xml
+C:\Source\ApothAudioTools\libvideo\obj\Debug\ApothVidLib.csproj.CopyComplete
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Newtonsoft.Json.dll
+C:\Source\ApothAudioTools\libvideo\bin\Debug\Newtonsoft.Json.xml

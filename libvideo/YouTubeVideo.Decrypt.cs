@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,16 +11,24 @@ namespace ApothVidLib
 {
     public partial class YouTubeVideo
     {
-        private static readonly Regex DecryptionFunctionRegex_Static_1 = new Regex(@"\bc\s*&&\s*a\.set\([^,]+,\s*(?:encodeURIComponent\s*\()?\s*([\w$]+)\(");
-        //Dynamic with Service	
-        private static Regex DFunctionRegex_Dynamic;
+        // Your Service
+        // https://dl.dropboxusercontent.com/s/ccmwnfmcmmwdspf/dfunctionregex.txt is not reliable please use own file
+        /// <summary>
+        /// <para>Url to a remote txt file. The file contains the current Regex-string for decrypting some videos.</para> 
+        /// Used as fallback in case of a breaking update of Youtubes javascript. This allows an update of the Regex even after deployment of the application.
+        /// </summary>
+        public static string DFunctionRegexService = "https://dl.dropboxusercontent.com/s/ccmwnfmcmmwdspf/dfunctionregex.txt";
+        // Dynamic Regex with Service	
+        private static Regex DecryptionFunctionDynamicRegex;
+        // Static Regex
+        private static readonly Regex DecryptionFunctionStaticRegex = new Regex(@"\bc\s*&&\s*a\.set\([^,]+,\s*(?:encodeURIComponent\s*\()?\s*([\w$]+)\(");
         private static readonly Regex FunctionRegex = new Regex(@"\w+\.(\w+)\(");
         private async Task<string> DecryptAsync(string uri, Func<DelegatingClient> makeClient)
         {
             var query = new Query(uri);
 
             string signature;
-            if (!query.TryGetValue(ApothVidLib.YouTube.GetSignatureKey(), out signature))
+            if (!query.TryGetValue(YouTube.GetSignatureKey(), out signature))
                 return uri;
 
             if (string.IsNullOrWhiteSpace(signature))
@@ -30,7 +39,7 @@ namespace ApothVidLib
                 .GetStringAsync(jsPlayer)
                 .ConfigureAwait(false);
 
-            query[ApothVidLib.YouTube.GetSignatureKey()] = DecryptSignature(js, signature);
+            query[YouTube.GetSignatureKey()] = DecryptSignature(js, signature);
             return query.ToString();
         }
         private string DecryptSignature(string js, string signature)
@@ -83,39 +92,51 @@ namespace ApothVidLib
                     return deciphererFuncBody.Groups[1].Value.Split(';');
                 }
             }
+            // TODO Remove
+            var decryptionFunction = GetDecryptionFunction(js);
+            var match = Regex.Match(js, $@"(?!h\.){Regex.Escape(decryptionFunction)}=function\(\w+\)\{{(.*?)\}}", RegexOptions.Singleline);
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Split(';');
+            }
+
             throw new Exception("Could not find signature DecryptionFunctionLines. Please report this issue to us.");
-
-            //OLD
-            //var decryptionFunction = GetDecryptionFunction(js);
-            //var match =
-            //    Regex.Match(
-            //        js,
-            //        $@"(?!h\.){Regex.Escape(decryptionFunction)}=function\(\w+\)\{{(.*?)\}}",
-            //        RegexOptions.Singleline);
-            //if (!match.Success)
-            //{
-            //    throw new Exception($"{nameof(GetDecryptionFunctionLines)} failed");
-            //}
-            //return match.Groups[1].Value.Split(';');
         }
-
+        // TODO Remove
         private string GetDecryptionFunction(string js)
         {
-            var match = DecryptionFunctionRegex_Static_1.Match(js);
+            //Static
+            var match = DecryptionFunctionStaticRegex.Match(js);
             if (match.Success)
             {
                 return match.Groups[1].Value;
             }
-            else if ((match = DFunctionRegex_Dynamic.Match(js)).Success)
+            //Dynamic
+            if (DecryptionFunctionDynamicRegex == null)
+            {
+                DecryptionFunctionDynamicRegex = new Regex(Task.Run(GetDecryptRegex).Result);
+            }
+            if ((match = DecryptionFunctionDynamicRegex.Match(js)).Success)
             {
                 return match.Groups[1].Value;
             }
-            else
+            throw new Exception($"{nameof(GetDecryptionFunction)} failed");
+        }
+        // TODO Remove
+        // For Dynamic Regex Service
+        private async Task<string> GetDecryptRegex()
+        {
+            try
             {
-                throw new Exception($"{nameof(GetDecryptionFunction)} failed");
+                HttpClient httpClient = new HttpClient();
+                var r = await httpClient.GetAsync(DFunctionRegexService);
+                return await r.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
-
         private class Decryptor
         {
             private static readonly Regex ParametersRegex = new Regex(@"\(\w+,(\d+)\)");
