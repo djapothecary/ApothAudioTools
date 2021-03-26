@@ -3,3 +3,7 @@
 ################################################################################
 
 *.lock
+.vs/ApothAudioTools/v15/Server/sqlite3/storage.ide
+.vs/ApothAudioTools/v15/Server/sqlite3/storage.ide
+.vs/ApothAudioTools/v15/Server/sqlite3/storage.ide-shm
+.vs/ApothAudioTools/v15/Server/sqlite3/storage.ide-wal
